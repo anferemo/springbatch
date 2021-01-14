@@ -24,7 +24,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 
 import co.com.worldoffice.shopping.batch.JobCompletionNotificationListener;
-import co.com.worldoffice.shopping.batch.Product;
+import co.com.worldoffice.shopping.batch.FileProduct;
 import co.com.worldoffice.shopping.batch.ProductProcessor;
 
 @Configuration
@@ -40,8 +40,8 @@ public class BatchConfiguration {
 	  private Logger logger = LogManager.getLogger(BatchConfiguration.class);
 	  
 	  @Bean
-	  public FlatFileItemReader<Product> reader() {
-		  FlatFileItemReader<Product> reader = new FlatFileItemReader<>();
+	  public FlatFileItemReader<FileProduct> reader() {
+		  FlatFileItemReader<FileProduct> reader = new FlatFileItemReader<>();
 		  reader.setLinesToSkip(1);
 		  reader.setResource(new ClassPathResource("Productos.csv"));
 		  reader.setLineMapper(new DefaultLineMapper() {
@@ -53,9 +53,9 @@ public class BatchConfiguration {
 		                }
 		            });
 		            //Set values in Product class
-		            setFieldSetMapper(new BeanWrapperFieldSetMapper<Product>() {
+		            setFieldSetMapper(new BeanWrapperFieldSetMapper<FileProduct>() {
 		                {
-		                    setTargetType(Product.class);
+		                    setTargetType(FileProduct.class);
 		                }
 		            });
 		        }
@@ -69,10 +69,10 @@ public class BatchConfiguration {
 	  }
 	  
 	  @Bean
-	  public JdbcBatchItemWriter<Product> writer(DataSource dataSource) {
-	    return new JdbcBatchItemWriterBuilder<Product>()
+	  public JdbcBatchItemWriter<FileProduct> writer(DataSource dataSource) {
+	    return new JdbcBatchItemWriterBuilder<FileProduct>()
 	      .itemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>())
-	      .sql("INSERT INTO products (product_name, brand, price, stock, state, discount_percent) VALUES (:name, :brand, :price, :stock, :state, :discount_percent)")
+	      .sql("INSERT INTO product (name, brand, price, stock, state, discount_percent) VALUES (:name, :brand, :price, :stock, :state, :discount_percent)")
 	      .dataSource(dataSource)
 	      .build();
 	  }
@@ -90,9 +90,9 @@ public class BatchConfiguration {
 	  }
 
 	  @Bean
-	  public Step step1(JdbcBatchItemWriter<Product> writer) {
+	  public Step step1(JdbcBatchItemWriter<FileProduct> writer) {
 	    return stepBuilderFactory.get("step1")
-	      .<Product, Product> chunk(10)
+	      .<FileProduct, FileProduct> chunk(10)
 	      .reader(reader())
 	      .processor(processor())
 	      .writer(writer)

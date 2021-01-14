@@ -25,8 +25,8 @@ public class JobCompletionNotificationListener extends JobExecutionListenerSuppo
 	    if(jobExecution.getStatus() == BatchStatus.COMPLETED) {
 	      log.info("!!! JOB FINISHED! Time to verify the results");
 
-	      jdbcTemplate.query("SELECT product_name, brand, price, stock, state, discount_percent FROM products",
-	        (rs, row) -> new Product(
+	      jdbcTemplate.query("SELECT name, brand, price, stock, state, discount_percent FROM product",
+	        (rs, row) -> new FileProduct(
 	          rs.getString(1),
 	          rs.getString(2),
 	          rs.getBigDecimal(3),
