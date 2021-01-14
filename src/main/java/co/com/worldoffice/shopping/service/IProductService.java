@@ -1,5 +1,6 @@
 package co.com.worldoffice.shopping.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 //import org.springframework.data.domain.Page;
@@ -13,5 +14,7 @@ public interface IProductService {
 	List<Product> findByNameLike(String name,Pageable paging);
 	
 	List<Product> findByBrand(String brand, Pageable paging);
+	
+	List<Product> findByPriceRange(BigDecimal minValue, BigDecimal maxValue, Pageable paging);
 	
 }

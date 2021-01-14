@@ -1,5 +1,6 @@
 package co.com.worldoffice.shopping.service.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,6 +48,29 @@ public class ProductService implements IProductService{
 		products = productPage.getContent();
 		return products;
 	}
+
+	@Override
+	public List<Product> findByPriceRange(BigDecimal minValue, BigDecimal maxValue, Pageable paging) {
+		// TODO Auto-generated method stub
+		List<Product> products = new ArrayList<>();
+		Page<Product> productPage;
+		if(minValue!=null) {
+			if(maxValue!=null) {
+				productPage=productRepo.findProductByPriceRange(minValue, maxValue, paging);
+				products=productPage.getContent();
+			} else {
+				productPage=productRepo.findByPriceGreaterThanEqual(minValue, paging);
+				products=productPage.getContent();
+			}
+		} else if (maxValue!=null) {
+			productPage=productRepo.findByPriceLessThanEqual(maxValue, paging);
+			products=productPage.getContent();
+		}
+		
+		return products;
+	}
+	
+	
 	
 	
 	

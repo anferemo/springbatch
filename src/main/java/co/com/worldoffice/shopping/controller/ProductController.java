@@ -1,5 +1,7 @@
 package co.com.worldoffice.shopping.controller;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -83,5 +85,30 @@ public class ProductController {
 			response.put("Exception", ex.getMessage());
 			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
+	
+	@GetMapping( name = "status", path= "/price")
+	public ResponseEntity<Map<String, Object>> findProductByPriceRange(
+			@RequestParam(required = false) BigDecimal minValue,
+			@RequestParam(required = false) BigDecimal maxValue,
+			@RequestParam(defaultValue = "0") int page,
+	        @RequestParam(defaultValue = "3") int size) {
+		Map<String, Object> response = new HashMap<>();
+		try {
+			List<Product> result = new ArrayList<>();
+			Pageable paging = PageRequest.of(page, size);
+			result=productSvc.findByPriceRange(minValue, maxValue, paging);
+			
+			response.put("tutorials", result);
+		    response.put("totalItems", result.size());
+		    
+		    return new ResponseEntity<>(response, HttpStatus.OK);
+		} catch(Exception ex) {
+			ex.printStackTrace();
+			response.put("Description", "There was an Error");
+			response.put("Exception", ex.getMessage());
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
 	}
 }
