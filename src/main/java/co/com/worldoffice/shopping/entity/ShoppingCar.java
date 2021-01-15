@@ -16,7 +16,7 @@ import javax.persistence.OneToMany;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity(name = "SHOPPING_CART")
-public class ShoppingCart implements Serializable{
+public class ShoppingCar implements Serializable{
 
 	/**
 	 * 
@@ -34,7 +34,7 @@ public class ShoppingCart implements Serializable{
 	@Column(name="finished")
 	private boolean isPurchased;
 
-	public ShoppingCart() {
+	public ShoppingCar() {
 		super();
 		this.items = new ArrayList<>();
 		this.isPurchased = false;

@@ -15,14 +15,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import co.com.worldoffice.shopping.dto.ProductItemDTO;
-import co.com.worldoffice.shopping.dto.ShoppingCartDTO;
-import co.com.worldoffice.shopping.entity.ShoppingCart;
+import co.com.worldoffice.shopping.dto.ShoppingCarDTO;
+import co.com.worldoffice.shopping.entity.ShoppingCar;
 import co.com.worldoffice.shopping.service.IProductService;
 import co.com.worldoffice.shopping.service.IShoppingCartService;
 
 @RestController
 @RequestMapping(name = "Shopping-Cart", path = "/ShopCart")
-public class ShoppingCartController {
+public class ShoppingCarController {
 	
 	@Autowired
 	private IShoppingCartService shopingCarService;
@@ -34,10 +34,10 @@ public class ShoppingCartController {
 	}
 	
 	@PostMapping(name="Create Shopping Cart", path="/")
-	public ResponseEntity<Map<String, Object>> create(@Valid @RequestBody ShoppingCartDTO input){
+	public ResponseEntity<Map<String, Object>> create(@Valid @RequestBody ShoppingCarDTO input){
 		Map<String, Object> response = new HashMap<>();
 		try {
-			ShoppingCart createdCar = shopingCarService.create(input);
+			ShoppingCar createdCar = shopingCarService.create(input);
 			response.put("Result", createdCar);
 			response.put("Message", "Shopping Car Created");
 			return new ResponseEntity<>(response, HttpStatus.OK);
@@ -53,7 +53,7 @@ public class ShoppingCartController {
 	public ResponseEntity<Map<String, Object>> addProductToCar(@Valid @RequestBody ProductItemDTO input){
 		Map<String, Object> response = new HashMap<>();
 		try {
-			ShoppingCart car= shopingCarService.addProduct(input);
+			ShoppingCar car= shopingCarService.addProduct(input);
 			response.put("Result", car);
 			return new ResponseEntity<>(response, HttpStatus.OK);
 		}catch (Exception ex) {
