@@ -50,15 +50,23 @@ public class ShoppingCarService implements IShoppingCartService {
 		ShoppingCar shopCar = findById(productInfo.getIdShoppingCar());
 		
 		ProductItem item = createProductItem(product,shopCar,productInfo);
-		shopCar.addItem(item);
+		if (item!=null) {
+			shopCar.addItem(item);
+		}
 		
 		shoppingCarRepo.save(shopCar);
 		return shopCar;
 	}
 	
 	
-	private ProductItem createProductItem(Product product, ShoppingCar shopCar, ProductItemDTO productInfo ) {
+	private ProductItem createProductItem(Product product, ShoppingCar shopCar, ProductItemDTO productInfo ) throws Exception {
 		// TODO Auto-generated method stub
+		//Validar que el producto no exista en el carrito de compra
+		boolean itemExist = shopCar.getItems().stream().filter( (item) -> item.getProduct().getId()==productInfo.getIdProduct()).findFirst().isPresent();
+		if (itemExist) {
+			throw new Exception ("No se puede adicionar La linea de Producto " + productInfo.getIdProduct() + " porque ya existe una creada");
+		}
+		
 		ProductItem item = new ProductItem();
 		item.setAmount(productInfo.getAmount());
 		item.setPrice(product.getPrice());
@@ -117,6 +125,9 @@ public class ShoppingCarService implements IShoppingCartService {
 	public void doPurchase(long idShoppingCart) throws Exception {
 		// TODO Auto-generated method stub
 		ShoppingCar shopCar = findById(idShoppingCart);
+		if (shopCar.isPurchased()) {
+			throw new Exception("Ya se realizó el proceso de compra correspondiente al carrito con id " + idShoppingCart ); 
+		}
 		for (ProductItem item: shopCar.getItems()) {
 			Product product = item.getProduct();
 			int totalStock = product.getStock() - item.getAmount();
