@@ -6,6 +6,8 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +29,8 @@ import co.com.worldoffice.shopping.service.IShoppingCartService;
 @RequestMapping(name = "Shopping-Cart", path = "/ShopCart")
 public class ShoppingCarController {
 	
+	private static Logger log = LogManager.getLogger(ShoppingCarController.class);
+	
 	@Autowired
 	private IShoppingCartService shopingCarService;
 	
@@ -43,9 +47,11 @@ public class ShoppingCarController {
 			ShoppingCar createdCar = shopingCarService.create(input);
 			response.put("Result", createdCar);
 			response.put("Message", "Shopping Car Created");
+			log.info(response);
+			log.info("create() succesful");
 			return new ResponseEntity<>(response, HttpStatus.OK);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			log.error(ex);
 			response.put("Description", "There was an Error");
 			response.put("Exception", ex.getMessage());
 			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -58,9 +64,11 @@ public class ShoppingCarController {
 		try {
 			ShoppingCar car= shopingCarService.addProduct(input);
 			response.put("Result", car);
+			log.info(response);
+			log.info("addProductToCar() succesful");
 			return new ResponseEntity<>(response, HttpStatus.OK);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			log.error(ex);
 			response.put("Description", "There was an Error");
 			response.put("Exception", ex.getMessage());
 			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -75,9 +83,11 @@ public class ShoppingCarController {
 		try {
 			List<Product> products = shopingCarService.findAssociatedProducts(idShoppingCar);
 			response.put("Result", products);
+			log.info(response);
+			log.info("findCarProducts() succesful");
 			return new ResponseEntity<>(response, HttpStatus.OK);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			log.error(ex);
 			response.put("Description", "There was an Error");
 			response.put("Exception", ex.getMessage());
 			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -90,9 +100,11 @@ public class ShoppingCarController {
 		try {
 			ShoppingCar shopCar = shopingCarService.deleteProducts(idShoppingCar);
 			response.put("Result", shopCar);
+			log.info(response);
+			log.info("deleteProducts() succesful");
 			return new ResponseEntity<>(response, HttpStatus.OK);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			log.error(ex);
 			response.put("Description", "There was an Error");
 			response.put("Exception", ex.getMessage());
 			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -105,9 +117,11 @@ public class ShoppingCarController {
 		try {
 			shopingCarService.doPurchase(idShoppingCart);
 			response.put("Result", "Items Succesfully sold");
+			log.info(response);
+			log.info("doPurchase() succesful");
 			return new ResponseEntity<>(response, HttpStatus.OK);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			log.error(ex);
 			response.put("Description", "There was an Error");
 			response.put("Exception", ex.getMessage());
 			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);

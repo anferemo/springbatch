@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +19,9 @@ import co.com.worldoffice.shopping.service.IProductService;
 @Service
 public class ProductService implements IProductService{
 	
+	
+	private static Logger log = LogManager.getLogger(ProductService.class);
+			
 	@Autowired
 	private ProductRepository productRepo;
 
@@ -59,13 +64,17 @@ public class ProductService implements IProductService{
 			if(maxValue!=null) {
 				productPage=productRepo.findProductByPriceRange(minValue, maxValue, paging);
 				products=productPage.getContent();
+				log.info("findProductByPriceRange()", products);
 			} else {
 				productPage=productRepo.findByPriceGreaterThanEqual(minValue, paging);
 				products=productPage.getContent();
+				log.info("findByPriceGreaterThanEqual()", products);
 			}
 		} else if (maxValue!=null) {
 			productPage=productRepo.findByPriceLessThanEqual(maxValue, paging);
 			products=productPage.getContent();
+			log.info(products);
+			log.info("findByPriceLessThanEqual()", products);
 		}
 		
 		return products;

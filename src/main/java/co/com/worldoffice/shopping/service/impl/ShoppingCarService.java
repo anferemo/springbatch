@@ -14,6 +14,7 @@ import co.com.worldoffice.shopping.dto.ShoppingCarDTO;
 import co.com.worldoffice.shopping.entity.Product;
 import co.com.worldoffice.shopping.entity.ProductItem;
 import co.com.worldoffice.shopping.entity.ShoppingCar;
+import co.com.worldoffice.shopping.repository.ProductItemRepository;
 import co.com.worldoffice.shopping.repository.ProductRepository;
 import co.com.worldoffice.shopping.repository.ShoppingCarRepository;
 import co.com.worldoffice.shopping.service.IShoppingCartService;
@@ -26,6 +27,9 @@ public class ShoppingCarService implements IShoppingCartService {
 	
 	@Autowired
 	private ProductRepository productRepo;
+	
+	@Autowired
+	private ProductItemRepository itemRepo;
 	
 	@Override
 	@Transactional
@@ -114,9 +118,11 @@ public class ShoppingCarService implements IShoppingCartService {
 	public ShoppingCar deleteProducts(long idShoppingCart) throws Exception {
 		// TODO Auto-generated method stub
 		ShoppingCar shopCar = findById(idShoppingCart);
+		itemRepo.deleteAll(shopCar.getItems());
 		shopCar.getItems().clear();
 		//shopCar.setItems(new ArrayList<>());
 		shoppingCarRepo.save(shopCar);
+		
 		return shopCar;
 	}
 

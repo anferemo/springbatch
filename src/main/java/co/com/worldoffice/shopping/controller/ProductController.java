@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,6 +26,8 @@ import co.com.worldoffice.shopping.service.IProductService;
 @RestController
 @RequestMapping(name = "Product", path = "/Product")
 public class ProductController {
+	
+	private static Logger log = LogManager.getLogger(ProductController.class);
 	
 	@Autowired
 	private IProductService productSvc;
@@ -50,10 +54,10 @@ public class ProductController {
 
 		    response.put("tutorials", result);
 		    response.put("totalItems", result.size());
-			
+			log.info("findProductByName() succesful");
 		    return new ResponseEntity<>(response, HttpStatus.OK);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			log.error(ex);
 			response.put("Description", "There was an Error");
 			response.put("Exception", ex.getMessage());
 			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -77,10 +81,10 @@ public class ProductController {
 
 		    response.put("tutorials", result);
 		    response.put("totalItems", result.size());
-			
+		    log.info("findProductByBrand() succesful");
 		    return new ResponseEntity<>(response, HttpStatus.OK);
 		} catch(Exception ex) {
-			ex.printStackTrace();
+			log.error(ex);
 			response.put("Description", "There was an Error");
 			response.put("Exception", ex.getMessage());
 			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -93,6 +97,7 @@ public class ProductController {
 			@RequestParam(required = false) BigDecimal maxValue,
 			@RequestParam(defaultValue = "0") int page,
 	        @RequestParam(defaultValue = "3") int size) {
+		log.info("findProductByPriceRange() start");
 		Map<String, Object> response = new HashMap<>();
 		try {
 			List<Product> result = new ArrayList<>();
@@ -101,10 +106,10 @@ public class ProductController {
 			
 			response.put("tutorials", result);
 		    response.put("totalItems", result.size());
-		    
+		    log.info("findProductByPriceRange() succesful");
 		    return new ResponseEntity<>(response, HttpStatus.OK);
 		} catch(Exception ex) {
-			ex.printStackTrace();
+			log.error(ex);
 			response.put("Description", "There was an Error");
 			response.put("Exception", ex.getMessage());
 			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);

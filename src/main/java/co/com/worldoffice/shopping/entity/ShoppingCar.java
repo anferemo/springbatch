@@ -75,6 +75,11 @@ public class ShoppingCar implements Serializable{
 	public void addItem(ProductItem item) {
 		this.items.add(item);
 	}
+
+	@Override
+	public String toString() {
+		return "ShoppingCar [id=" + id + ", owner=" + owner + ", items=" + items + ", isPurchased=" + isPurchased + "]";
+	}
 	
 	
 }

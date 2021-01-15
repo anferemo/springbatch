@@ -100,6 +100,13 @@ public class Product implements Serializable{
 	public void setDiscount_percent(BigDecimal discount_percent) {
 		this.discount_percent = discount_percent;
 	}
+
+	@Override
+	public String toString() {
+		return "Product [id=" + id + ", name=" + name + ", brand=" + brand + ", price=" + price + ", stock=" + stock
+				+ ", state=" + state + ", discount_percent=" + discount_percent + "]";
+	}
+	
 	
 	
 }

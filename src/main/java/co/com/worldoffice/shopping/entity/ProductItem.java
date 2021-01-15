@@ -68,6 +68,11 @@ public class ProductItem implements Serializable{
 	public void setProduct(Product product) {
 		this.product = product;
 	}
+
+	@Override
+	public String toString() {
+		return "ProductItem [id=" + id + ", product=" + product + ", amount=" + amount + ", price=" + price + "]";
+	}
 	
 	
 	
