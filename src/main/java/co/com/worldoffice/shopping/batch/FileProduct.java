@@ -17,7 +17,7 @@ public class FileProduct {
 	@NotNull
 	private BigDecimal price;
 	
-	@Min(value=1)
+	@Min(value=0)
 	private int stock;
 	
 	@NotEmpty

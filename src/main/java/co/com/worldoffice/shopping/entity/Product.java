@@ -32,7 +32,7 @@ public class Product implements Serializable{
 	@NotNull
 	private BigDecimal price;
 	
-	@Min(value=1)
+	@Min(value=0)
 	private int stock;
 	
 	@NotEmpty

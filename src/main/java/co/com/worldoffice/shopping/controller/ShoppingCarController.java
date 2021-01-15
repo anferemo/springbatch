@@ -1,6 +1,7 @@
 package co.com.worldoffice.shopping.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -8,16 +9,18 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import co.com.worldoffice.shopping.dto.ProductItemDTO;
 import co.com.worldoffice.shopping.dto.ShoppingCarDTO;
+import co.com.worldoffice.shopping.entity.Product;
 import co.com.worldoffice.shopping.entity.ShoppingCar;
-import co.com.worldoffice.shopping.service.IProductService;
 import co.com.worldoffice.shopping.service.IShoppingCartService;
 
 @RestController
@@ -41,7 +44,7 @@ public class ShoppingCarController {
 			response.put("Result", createdCar);
 			response.put("Message", "Shopping Car Created");
 			return new ResponseEntity<>(response, HttpStatus.OK);
-		}catch (Exception ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			response.put("Description", "There was an Error");
 			response.put("Exception", ex.getMessage());
@@ -56,7 +59,7 @@ public class ShoppingCarController {
 			ShoppingCar car= shopingCarService.addProduct(input);
 			response.put("Result", car);
 			return new ResponseEntity<>(response, HttpStatus.OK);
-		}catch (Exception ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			response.put("Description", "There was an Error");
 			response.put("Exception", ex.getMessage());
@@ -64,4 +67,52 @@ public class ShoppingCarController {
 		}
 
 	}
+	
+	
+	@GetMapping( name = "Query Shopping Cart Products", path= "/Products")
+	public ResponseEntity<Map<String, Object>> findCarProducts(@RequestParam(defaultValue = "0") long idShoppingCar) {
+		Map<String, Object> response = new HashMap<>();
+		try {
+			List<Product> products = shopingCarService.findAssociatedProducts(idShoppingCar);
+			response.put("Result", products);
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			response.put("Description", "There was an Error");
+			response.put("Exception", ex.getMessage());
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@DeleteMapping(name="Clear ShoppingCart products", path="/Products")
+	public ResponseEntity<Map<String, Object>> deleteProducts(@RequestParam(required = true) long idShoppingCar){
+		Map<String, Object> response = new HashMap<>();
+		try {
+			ShoppingCar shopCar = shopingCarService.deleteProducts(idShoppingCar);
+			response.put("Result", shopCar);
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			response.put("Description", "There was an Error");
+			response.put("Exception", ex.getMessage());
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@PostMapping(name="Process to do purchase process", path="/Purchase")
+	public ResponseEntity<Map<String, Object>> doPurchase(@RequestParam("idShoppingCart") long idShoppingCart){
+		Map<String, Object> response = new HashMap<>();
+		try {
+			shopingCarService.doPurchase(idShoppingCart);
+			response.put("Result", "Items Succesfully sold");
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			response.put("Description", "There was an Error");
+			response.put("Exception", ex.getMessage());
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	
 }

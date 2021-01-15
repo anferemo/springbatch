@@ -1,5 +1,7 @@
 package co.com.worldoffice.shopping.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -26,6 +28,7 @@ public class ShoppingCarService implements IShoppingCartService {
 	private ProductRepository productRepo;
 	
 	@Override
+	@Transactional
 	public ShoppingCar create(ShoppingCarDTO inputData) {
 		// TODO Auto-generated method stub
 		ShoppingCar cart = new ShoppingCar();
@@ -44,14 +47,7 @@ public class ShoppingCarService implements IShoppingCartService {
 			throw new Exception("La cantidad de productos es superior a la existencia en Stock");
 		}
 		
-		Optional<ShoppingCar> shoppingCarQry = shoppingCarRepo.findById(productInfo.getIdShoppingCar());
-		ShoppingCar shopCar = null;
-		
-		if(shoppingCarQry.isPresent()) {
-			shopCar=shoppingCarQry.get();
-		} else {
-			throw new Exception("Carrito de compra con id: " + productInfo.getIdShoppingCar() + " no existe en base de datos");
-		}
+		ShoppingCar shopCar = findById(productInfo.getIdShoppingCar());
 		
 		ProductItem item = createProductItem(product,shopCar,productInfo);
 		shopCar.addItem(item);
@@ -79,6 +75,60 @@ public class ShoppingCarService implements IShoppingCartService {
 			throw new Exception("Producto con id: " + idProduct + " no existe en base de datos");
 		}
 		return product;
+	}
+	
+	@Override
+	public ShoppingCar findById(long id) throws Exception{
+		Optional<ShoppingCar> shoppingCarQry = shoppingCarRepo.findById(id);
+		ShoppingCar shopCar = null;
+		
+		if(shoppingCarQry.isPresent()) {
+			shopCar=shoppingCarQry.get();
+		} else {
+			throw new Exception("Carrito de compra con id: " + id + " no existe en base de datos");
+		}
+		return shopCar;
+	}
+
+	@Override
+	public List<Product> findAssociatedProducts(long idShoppingCar) throws Exception {
+		// TODO Auto-generated method stub
+		ShoppingCar shopCar = findById(idShoppingCar);
+		List<Product> productList = new ArrayList<>();
+		shopCar.getItems().stream().forEach(
+					(item)-> { productList.add(item.getProduct()); }
+				);		
+		return productList;
+	}
+
+	@Override
+	@Transactional
+	public ShoppingCar deleteProducts(long idShoppingCart) throws Exception {
+		// TODO Auto-generated method stub
+		ShoppingCar shopCar = findById(idShoppingCart);
+		shopCar.getItems().clear();
+		//shopCar.setItems(new ArrayList<>());
+		shoppingCarRepo.save(shopCar);
+		return shopCar;
+	}
+
+	@Override
+	@Transactional
+	public void doPurchase(long idShoppingCart) throws Exception {
+		// TODO Auto-generated method stub
+		ShoppingCar shopCar = findById(idShoppingCart);
+		for (ProductItem item: shopCar.getItems()) {
+			Product product = item.getProduct();
+			int totalStock = product.getStock() - item.getAmount();
+			if (totalStock >= 0) {
+				product.setStock(totalStock);
+				productRepo.save(product);
+			} else {
+				throw new Exception("El producto con id " + item.getProduct().getId()  + " No cuenta con existencias para la compra");
+			}
+		}
+		shopCar.setPurchased(true);
+		shoppingCarRepo.save(shopCar);
 	}
 	
 
