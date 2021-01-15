@@ -8,7 +8,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity
 public class Product implements Serializable{
 	/**
@@ -18,11 +24,21 @@ public class Product implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	@NotEmpty
 	private String name;
+	@NotEmpty
 	private String brand;
+	
+	@NotNull
 	private BigDecimal price;
+	
+	@Min(value=1)
 	private int stock;
+	
+	@NotEmpty
 	private String state;
+	
+	@NotNull
 	private BigDecimal discount_percent;
 	
 	public Product() {

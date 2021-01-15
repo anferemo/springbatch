@@ -3,6 +3,7 @@ package co.com.worldoffice.shopping.service.impl;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -68,6 +69,13 @@ public class ProductService implements IProductService{
 		}
 		
 		return products;
+	}
+
+	@Override
+	public Optional<Product> findById(long id) {
+		// TODO Auto-generated method stub
+		Optional<Product> product = productRepo.findById(id);
+		return product;
 	}
 	
 	
